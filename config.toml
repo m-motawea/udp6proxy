@@ -1,0 +1,14 @@
+[Redis]
+Address = "127.0.0.1"
+Port = 6379
+Password = ""
+DB = 0
+Prefix = ""
+Update = 60
+
+[[Endpoint]]
+Name = "wg0"
+RemoteAddress = "::1"
+RemotePort = 23456
+LocalPort = 12345
+WireGuard = true
