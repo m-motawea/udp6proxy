@@ -103,7 +103,7 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 			}
 			listeners[key] = &listener
 		} else {
-			// Update Old Listeners
+			// TODO Update Old Listeners
 			configString, err := client.Get(key).Result()
 			if err != nil {
 				continue
