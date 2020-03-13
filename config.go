@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/BurntSushi/toml"
@@ -80,6 +81,14 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 
 	// Update Listeners with Configuration from Redis
 	for _, key := range configKeys.Val() {
+		if prefix != "" {
+			spl := strings.Split(key, prefix)
+			if len(spl) > 1 {
+				key = spl[1]
+			} else {
+				continue
+			}
+		}
 		configJsonStr := client.Get(key)
 		if configJsonStr == nil {
 			continue
@@ -121,6 +130,14 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 	for key, l := range listeners {
 		FOUND := false
 		for _, name := range configKeys.Val() {
+			if prefix != "" {
+				spl := strings.Split(key, prefix)
+				if len(spl) > 1 {
+					key = spl[1]
+				} else {
+					continue
+				}
+			}
 			if name == key {
 				FOUND = true
 				break
