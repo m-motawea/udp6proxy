@@ -40,10 +40,12 @@ func main() {
 		listeners[endpoint.Name] = &listener
 	}
 	go ConfigUpdateLoop(CONFIG, listeners, &wg)
+	time.Sleep(2 * time.Second)
 	wg.Wait()
 }
 
 func ConfigUpdateLoop(config Config, listeners map[string]*UDPListener, wg *sync.WaitGroup) {
+	wg.Add(1)
 	for {
 		ReadConfigFromRedis(config.Redis.Address, config.Redis.Port, config.Redis.DB, config.Redis.Password, config.Redis.Prefix, listeners, wg)
 		log.Println(listeners)
