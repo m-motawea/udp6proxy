@@ -88,64 +88,65 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 			} else {
 				continue
 			}
-			
-		_, ok := listeners[key]
-		if !ok {
-			// Add new Listeners
-			configString, err := client.Get(prefix + key).Result()
-			if err != nil {
-				continue
-			}
-			endpt := endpoint{}
-			err = json.Unmarshal([]byte(configString), &endpt)
-			if err != nil {
-				continue
-			}
-			listener, err := NewUDPListener(endpt.LocalPort, endpt.RemoteAddress, endpt.RemotePort, wg, endpt.WireGuard)
-			if err != nil {
-				continue
-			}
-			err = listener.Start()
-			if err != nil {
-				log.Printf("Failed to start listener due to erro %t", err)
-				continue
-			}
-			listeners[key] = &listener
-		} else {
-			// TODO Update Old Listeners
-			configString, err := client.Get(prefix + key).Result()
-			if err != nil {
-				continue
-			}
-			endpt := endpoint{}
-			err = json.Unmarshal([]byte(configString), &endpt)
-			if err != nil {
-				continue
-			}
 
-		}
-	}
-
-	// Remove Listeners that are not stored in redis
-	for key, l := range listeners {
-		FOUND := false
-		for _, name := range configKeys.Val() {
-			if prefix != "" {
-				spl := strings.Split(name, prefix)
-				if len(spl) > 1 {
-					name = spl[1]
-				} else {
+			_, ok := listeners[key]
+			if !ok {
+				// Add new Listeners
+				configString, err := client.Get(prefix + key).Result()
+				if err != nil {
 					continue
 				}
-			}
-			if name == key {
-				FOUND = true
-				break
+				endpt := endpoint{}
+				err = json.Unmarshal([]byte(configString), &endpt)
+				if err != nil {
+					continue
+				}
+				listener, err := NewUDPListener(endpt.LocalPort, endpt.RemoteAddress, endpt.RemotePort, wg, endpt.WireGuard)
+				if err != nil {
+					continue
+				}
+				err = listener.Start()
+				if err != nil {
+					log.Printf("Failed to start listener due to erro %t", err)
+					continue
+				}
+				listeners[key] = &listener
+			} else {
+				// TODO Update Old Listeners
+				configString, err := client.Get(prefix + key).Result()
+				if err != nil {
+					continue
+				}
+				endpt := endpoint{}
+				err = json.Unmarshal([]byte(configString), &endpt)
+				if err != nil {
+					continue
+				}
+
 			}
 		}
-		if !FOUND {
-			l.Stop()
-			delete(listeners, key)
+
+		// Remove Listeners that are not stored in redis
+		for key, l := range listeners {
+			FOUND := false
+			for _, name := range configKeys.Val() {
+				if prefix != "" {
+					spl := strings.Split(name, prefix)
+					if len(spl) > 1 {
+						name = spl[1]
+					} else {
+						continue
+					}
+				}
+				if name == key {
+					FOUND = true
+					break
+				}
+			}
+			if !FOUND {
+				l.Stop()
+				delete(listeners, key)
+			}
 		}
 	}
 }
