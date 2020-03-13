@@ -97,6 +97,7 @@ func (l *UDPListener) ClientLoop() {
 			n, _, err := l.ClientConn.ReadFromUDP(buffer)
 			if err != nil {
 				log.Printf("Failed to read in CleintLoop due to erro %t", err)
+				continue
 			}
 			_, err = l.ServerConn.WriteToUDP(buffer[:n], l.endAddr)
 
