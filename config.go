@@ -97,7 +97,7 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 		_, ok := listeners[key]
 		if !ok {
 			// Add new Listeners
-			configString, err := client.Get(key).Result()
+			configString, err := client.Get(prefix + key).Result()
 			if err != nil {
 				continue
 			}
@@ -108,6 +108,11 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 			}
 			listener, err := NewUDPListener(endpt.LocalPort, endpt.RemoteAddress, endpt.RemotePort, wg, endpt.WireGuard)
 			if err != nil {
+				continue
+			}
+			err = listener.Start()
+			if err != nil {
+				log.Printf("Failed to start listener due to erro %t", err)
 				continue
 			}
 			listeners[key] = &listener
@@ -143,7 +148,7 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 				break
 			}
 		}
-		if !FOUND {
+		if FOUND {
 			l.Stop()
 			delete(listeners, key)
 		}
