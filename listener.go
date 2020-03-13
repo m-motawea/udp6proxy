@@ -54,6 +54,8 @@ func (listener *UDPListener) Start() error {
 }
 
 func (l *UDPListener) Stop() {
+	l.ClientConn.Close()
+	l.ServerConn.Close()
 	l.clientCloseChannel <- 1
 	l.serverCloseChannel <- 1
 	l.wg.Done()
@@ -64,7 +66,6 @@ func (l *UDPListener) ServerLoop() {
 	for {
 		select {
 		case <-l.serverCloseChannel:
-			l.ServerConn.Close()
 			return
 		default:
 			n, addr, err := l.ServerConn.ReadFromUDP(buffer)
@@ -91,7 +92,6 @@ func (l *UDPListener) ClientLoop() {
 	for {
 		select {
 		case <-l.clientCloseChannel:
-			l.ClientConn.Close()
 			return
 		default:
 			n, _, err := l.ClientConn.ReadFromUDP(buffer)

@@ -88,12 +88,7 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 			} else {
 				continue
 			}
-		}
-		configJsonStr := client.Get(key)
-		if configJsonStr == nil {
-			continue
-		}
-		log.Printf("config %s", configJsonStr)
+			
 		_, ok := listeners[key]
 		if !ok {
 			// Add new Listeners
@@ -118,7 +113,7 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 			listeners[key] = &listener
 		} else {
 			// TODO Update Old Listeners
-			configString, err := client.Get(key).Result()
+			configString, err := client.Get(prefix + key).Result()
 			if err != nil {
 				continue
 			}
@@ -136,9 +131,9 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 		FOUND := false
 		for _, name := range configKeys.Val() {
 			if prefix != "" {
-				spl := strings.Split(key, prefix)
+				spl := strings.Split(name, prefix)
 				if len(spl) > 1 {
-					key = spl[1]
+					name = spl[1]
 				} else {
 					continue
 				}
@@ -148,7 +143,7 @@ func ReadConfigFromRedis(addr string, port int, db int, password string, prefix 
 				break
 			}
 		}
-		if FOUND {
+		if !FOUND {
 			l.Stop()
 			delete(listeners, key)
 		}
