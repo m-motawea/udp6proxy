@@ -38,7 +38,9 @@ Then ```udp6proxy config.toml```
 
 Please notice if you are using low numbered port like 80 or 443 you can use sudo or setcap before running the binary.
 
-sudo setcap CAP_NET_BIND_SERVICE=+eip udp6proxy
+```sudo setcap CAP_NET_BIND_SERVICE=+eip udp6proxy```
+
+Also, You need to run the server on a dual stack machine.
 
 # config.toml
 ### [Redis]
