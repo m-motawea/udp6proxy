@@ -4,7 +4,7 @@ Proxy UDP Traffic from IPv4 to IPv6 for WireGuard IPv6 Endpoints
 # Build
 ```
 go get github.com/m-motawea/udp6proxy
-# Replace$GOPATH with ~/go if you didn't set it
+# Replace $GOPATH with ~/go if you didn't set it
 cd $GOPATH/src/github.com/m-motawea/udp6proxy
 go build
 sudo cp upd6proxy /usr/bin/
