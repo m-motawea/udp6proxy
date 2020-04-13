@@ -2,16 +2,16 @@
 Proxy UDP Traffic from IPv4 to IPv6 for WireGuard IPv6 Endpoints
 
 # Build
-```
-go get github.com/m-motawea/udp6proxy
-# Replace $GOPATH with ~/go if you didn't set it
-cd $GOPATH/src/github.com/m-motawea/udp6proxy
-go build
-sudo cp upd6proxy /usr/bin/
+```bash
+$ go get github.com/m-motawea/udp6proxy
+$ # Replace $GOPATH with ~/go if you didn't set it
+$ cd $GOPATH/src/github.com/m-motawea/udp6proxy
+$ go build
+$ sudo cp upd6proxy /usr/bin/
 ```
 # Running
 Example configuration file
-```
+```toml
 [Redis]
 Address = "127.0.0.1"
 Port = 6379
@@ -55,7 +55,7 @@ define the proxy settings for an endpoint.
   - ```WireGuard```: If set to true, the server will drop non-wireguard traffic.
 
 # Data Representation in Redis:
-```
+```bash
 127.0.0.1:6379> keys *
 1) "wg0"
 2) "wg1"
