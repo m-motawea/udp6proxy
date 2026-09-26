@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>udp6proxy</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Login -->
+<section id="login-view" class="login hidden">
+  <form id="login-form" class="login-card" autocomplete="on">
+    <div class="brand brand-lg"><span class="logo" aria-hidden="true"></span>udp6proxy</div>
+    <p class="muted">Sign in to manage IPv4 → IPv6 endpoints.</p>
+    <label>Username<input name="username" autocomplete="username" required autofocus></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+    <p class="form-error" id="login-error"></p>
+    <button class="btn primary block" type="submit">Sign in</button>
+  </form>
+</section>
+
+<!-- App -->
+<div id="app-view" class="hidden">
+  <header class="topbar">
+    <div class="brand"><span class="logo" aria-hidden="true"></span>udp6proxy</div>
+    <nav class="tabs" id="tabs">
+      <a href="#/endpoints" data-tab="endpoints">Endpoints</a>
+      <a href="#/tokens" data-tab="tokens">API tokens</a>
+      <a href="#/users" data-tab="users">Users</a>
+    </nav>
+    <div class="topbar-right">
+      <span id="server-pill" class="pill" title="Server status"></span>
+      <div class="menu">
+        <button class="btn ghost" id="user-btn" aria-haspopup="true"></button>
+        <div class="menu-pop hidden" id="user-menu">
+          <button data-action="change-password">Change password</button>
+          <button data-action="logout">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="banner" class="banner hidden"></div>
+
+    <!-- Endpoints -->
+    <section id="page-endpoints" class="page">
+      <div class="cards" id="summary"></div>
+      <div class="page-head">
+        <h1>Endpoints</h1>
+        <div class="page-actions">
+          <input id="filter" class="search" type="search" placeholder="Filter…" aria-label="Filter endpoints">
+          <button class="btn primary" data-action="new-endpoint">New endpoint</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table" id="endpoints-table">
+          <thead><tr>
+            <th>Name</th><th>Listen (IPv4)</th><th></th><th>Remote (IPv6)</th>
+            <th class="num">Sessions</th><th class="num">In</th><th class="num">Out</th><th class="num">Dropped</th><th></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="empty hidden" id="endpoints-empty">
+          <p><strong>No endpoints yet.</strong></p>
+          <p class="muted">An endpoint listens on an IPv4 UDP port and relays traffic to an IPv6 host — typically a WireGuard peer.</p>
+          <button class="btn primary" data-action="new-endpoint">Create your first endpoint</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tokens -->
+    <section id="page-tokens" class="page hidden">
+      <div class="page-head">
+        <h1>API tokens</h1>
+        <div class="page-actions"><button class="btn primary" data-action="new-token">New token</button></div>
+      </div>
+      <p class="muted">Tokens authenticate the <code>udp6proxy</code> CLI and scripts: <code>Authorization: Bearer u6p_…</code></p>
+      <div class="table-wrap">
+        <table class="table" id="tokens-table">
+          <thead><tr><th>Name</th><th>Token</th><th>Owner</th><th>Created</th><th>Last used</th><th>Expires</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Users -->
+    <section id="page-users" class="page hidden">
+      <div class="page-head">
+        <h1>Users</h1>
+        <div class="page-actions"><button class="btn primary" data-action="new-user">New user</button></div>
+      </div>
+      <div class="table-wrap">
+        <table class="table" id="users-table">
+          <thead><tr><th>Username</th><th>Created</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Endpoint drawer -->
+<aside id="drawer" class="drawer hidden" aria-label="Endpoint details">
+  <div class="drawer-head">
+    <div><h2 id="drawer-title"></h2><p class="muted" id="drawer-sub"></p></div>
+    <button class="btn ghost icon" data-action="close-drawer" aria-label="Close">✕</button>
+  </div>
+  <div id="drawer-body"></div>
+</aside>
+
+<!-- Modal -->
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+  <form class="modal-card" id="modal-form" novalidate>
+    <h2 id="modal-title"></h2>
+    <div id="modal-body"></div>
+    <p class="form-error" id="modal-error"></p>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" data-action="close-modal">Cancel</button>
+      <button type="submit" class="btn primary" id="modal-submit">Save</button>
+    </div>
+  </form>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,14 +1,48 @@
-[Redis]
-Address = "127.0.0.1"
-Port = 6379
-Password = ""
-DB = 0
-Prefix = ""
-Update = 60
+# udp6proxy example configuration.
+# Every section is optional; with no file at all udp6proxy runs with the
+# file backend and serves the UI on http://127.0.0.1:8080/.
 
+# debug | info | warn | error
+LogLevel = "info"
+
+[Server]
+# Address of the web UI / API. "" disables it. Keep it on loopback unless
+# TLS is configured (or it sits behind a TLS reverse proxy).
+Listen = "127.0.0.1:8080"
+# TLSCert = "/etc/udp6proxy/tls.crt"
+# TLSKey  = "/etc/udp6proxy/tls.key"
+# SessionHours = 12
+# SecureCookies = false   # set true when behind a TLS-terminating proxy
+
+[Storage]
+# "file" (default) or "redis" (share endpoints between several nodes).
+Backend = "file"
+# Holds endpoints.json (file backend) and auth.json (users, API tokens).
+# Relative to this file's directory.
+StateDir = "state"
+# Seconds between polls of the backend for external changes.
+ReloadInterval = 10
+
+# Only used with Backend = "redis". Endpoints live in the hash
+# "<Prefix>endpoints". v1 per-endpoint keys are imported automatically.
+# [Redis]
+# Address = "127.0.0.1"
+# Port = 6379
+# Username = ""
+# Password = ""
+# DB = 0
+# Prefix = "udp6proxy:"
+# TLS = false
+
+# Endpoints listed here are created on startup if they don't exist yet.
+# After that, the UI/CLI/API own them (edits are not overwritten).
 [[Endpoint]]
 Name = "wg0"
-RemoteAddress = "::1"
-RemotePort = 23456
+Description = "example peer"
+# ListenAddress = "0.0.0.0"   # IPv4 address to bind (default: all)
 LocalPort = 12345
-WireGuard = true
+RemoteAddress = "2001:db8::1"  # IPv6 address or hostname (AAAA)
+RemotePort = 51820
+WireGuard = true               # drop anything that isn't WireGuard
+# IdleTimeout = 180            # seconds before an idle client session closes
+# Disabled = false
