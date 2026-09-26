@@ -1,3 +1,4 @@
 /udp6proxy
 /state/
 *.tmp
+/dist/
